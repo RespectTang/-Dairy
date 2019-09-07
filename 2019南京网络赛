@@ -1,0 +1,51 @@
+B 求a的b幂塔
+hint:扩展欧拉定理降幂
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int M=1e6+6;
+ll ph[M];
+ll getPhi(){
+    ph[0]=0,ph[1]=1;
+    for(int i=2;i<M;i++)
+        ph[i]=i;
+    for(int i=2;i<M;i++){
+        if(ph[i]==i){
+            for(int j=i;j<M;j+=i)
+                ph[j]=ph[j]/i*(i-1);
+        }
+    }
+}
+ll quick(ll a,ll b,ll mod){
+    ll t=1ll;
+    while(b){
+        if(b&1)
+            t=(t*a)%mod;
+        b>>=1;
+        a=(a*a)%mod;
+    }
+    return t;
+}
+ll sol(ll a,ll b,ll p){
+    if(b==0)
+        return 1;
+    if(p==1)
+        return 0;
+    ll P=sol(a,b-1,ph[p]);
+    if(P<ph[p]&&P)
+        return quick(a,P,p);
+    return quick(a,P+ph[p],p);
+}
+int main(){
+    int t;
+    scanf("%d",&t);
+    getPhi();
+    while(t--){
+        ll a,b,mod;
+        scanf("%lld%lld%lld",&a,&b,&mod);
+        printf("%lld\n",sol(a,b,mod)%mod);
+    }
+    return 0;
+}
+
+
