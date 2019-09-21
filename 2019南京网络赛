@@ -123,3 +123,25 @@ int main(){
 	}
 	return 0;
 } 
+
+A.二维偏序
+
+题意：宫殿的美丽值（每一位的和）
+step1：求每一个宫殿的美丽值
+step2：求子矩阵的元素和（二维前缀和）
+sum=sum[x2][y2]-sum[x1][y2]-sum[x2][y1]+sum[x1][y1];
+但是这样的话复杂度将会达到10^12
+考虑二维树状数组维护(x1,y1)到(x2,y2)的元素和，使用到二维偏序
+Node{value，position}
+Node A,B
+当认为A<B时，为A.position<B.position&&A.value<B.position
+用偏序将二维的坐标转换成为一维，然后可以用树状数组进行维护
+美丽值的公式：
+x=x-n/2-1;
+y=y-n/2-1;
+t=max(abs(x),abs(y));//t决定了是在第n圈上面
+if(x>=y) ans=n^2-4t^2-2t-x-y;
+else ans=n^2-4t^2+2t+x+y;
+
+
+
