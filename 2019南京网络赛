@@ -57,5 +57,69 @@ https://blog.csdn.net/weixin_43751631/article/details/100524096
 消耗根据时间所决定，但是期望消耗不等于期望时间
 
 概率DP经典例题：有n个格子要随机填满m块
+dp[i]:已经有i块，填满到m块还需要多少次
+dp[i]=i/n * (dp[i]) + (n-i)/n *(dp[i+1])+1 这时候需要逆推，因为dp[m]=0，每涂一次的期望值会+1
 
+题意：给出一幅有向无环图，保证只有1入度为0，n出度为0，求问一个机器人从1出发，每天等概率的走到相邻点或者留在原地，
+问到达n点的代价。每天的代价都不一样，就是天数（第x天走一步的代价就是x）
+消耗是由时间所决定的！！！
+设i的出度为x
+时间dp1[i]=1/(x+1)dp1[i]+1/(x+1)sum(j=i,i可以到达的所有点)dp1[j]+1
+消耗dp2[i]=1/(x+1)dp2[i]+1/(x+1)sum(j=i,i可以到达的所有点)dp2[j]+dp1[i]
 
+代码如下
+#include"iostream"
+#include"cstdio"
+#include"vector"
+using namespace std;
+const int maxn = 2e5+10;
+vector<int> a[maxn];
+double dp1[maxn],dp2[maxn];  
+int P,E;
+double Find1(int x){
+	 if(dp1[x]>0||x == P)return dp1[x];
+	 else{
+	 	int L = a[x].size();
+	 	double res = 0;
+	 	for(int i = 0;i < L;i++)
+			res+=((Find1(a[x][i])));
+	    dp1[x] = (res+L+1)/(L);
+	 }
+	 return dp1[x];
+}
+double Find2(int x){
+	 if(dp2[x]>0||x == P)return dp2[x];
+	 else{
+	 	int L = a[x].size();
+	 	double res = 0;
+	 	for(int i = 0;i < L;i++)
+			res+=((Find2(a[x][i])));
+	    dp2[x] = (res + dp1[x])/(L)+dp1[x];
+	 }
+	 return dp2[x];
+}
+int main(){
+	int T;
+	cin >> T;
+	while(T--){
+		
+		scanf("%d%d",&P,&E);
+		for(int i = 0;i <= P;i++)
+		{
+			dp1[i] = 0;
+			dp2[i] = 0;
+			a[i].clear();
+		}
+		for(int i = 0;i < E;i++)
+		{
+			int u,v;
+		    scanf("%d%d",&u,&v);
+		    a[u].push_back(v); 
+	    }
+	    Find1(1);
+	   double ans = Find2(1);
+	   //cout <<ans;
+	   printf("%.2lf\n",ans);
+	}
+	return 0;
+} 
